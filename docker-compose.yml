@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  db:
+    restart: unless-stopped
+    image: postgres:12.2-alpine
+    ports:
+      - "5432"
+    env_file: ./.env
+    volumes:
+    - dbdata:/var/lib/postgresql/data
+
+  web:
+    env_file: ./.env
+    volumes:
+      - static:/user/static
+      - ./app:/user/app
+    depends_on:
+      - db
+    build:
+      context: .
+      args:
+        MODE: dev
+    image: charts_example:latest
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: >
+      sh -c "/user/scripts/wait-for-psql.sh db &&
+               python manage.py makemigrations &&
+               python manage.py migrate &&
+               python manage.py collectstatic --noinput &&
+               python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  dbdata:
+  static:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $PWD/static

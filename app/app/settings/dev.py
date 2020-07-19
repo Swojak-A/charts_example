@@ -9,7 +9,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
-INSTALLED_APPS += []
+INSTALLED_APPS += ["modules.core"]
 
 DATABASES = {
     "default": dj_database_url.config(default=os.environ["DJANGO_DATABASE_URL"])

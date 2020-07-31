@@ -7,7 +7,9 @@ __all__ = ["BaseModel"]
 
 
 class BaseModel(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, db_index=True
+    )
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 

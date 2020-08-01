@@ -21,7 +21,7 @@ class Donation(BaseModel):
     )
 
     def __str__(self):
-        return f"Donation: {self.value} from {self.created_at.isoformat()}"
+        return f"{self.get_type_display()}: {self.value} from {self.created_at.isoformat()}"
 
     class Meta:
         verbose_name = _("Donation")

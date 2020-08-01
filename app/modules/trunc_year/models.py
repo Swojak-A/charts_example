@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from modules.core.db import BaseModel
-from .constants import DonationType
+from .constants import DonationTypes
 
 
 class Donation(BaseModel):
@@ -16,8 +16,8 @@ class Donation(BaseModel):
     type = models.CharField(
         verbose_name=_("Type"),
         max_length=256,
-        choices=DonationType.name_choices(),
-        default=DonationType.donation.name,
+        choices=DonationTypes.name_choices(),
+        default=DonationTypes.donation.name,
     )
 
     def __str__(self):

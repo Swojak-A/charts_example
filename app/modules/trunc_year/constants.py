@@ -6,6 +6,6 @@ from modules.core.constants import ChoicesFactory
 
 
 @unique
-class DonationType(ChoicesFactory):
+class DonationTypes(ChoicesFactory):
     donation = _("Donation")
     grant = _("Grant")

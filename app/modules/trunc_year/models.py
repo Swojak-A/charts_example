@@ -31,3 +31,10 @@ class Donation(BaseModel):
         verbose_name = _("Donation")
         verbose_name_plural = _("Donations")
         ordering = ("-created_at",)
+
+
+class DonationReport(Donation):
+    class Meta:
+        proxy = True
+        verbose_name = _("Donation Report")
+        verbose_name_plural = _("Donation Reports")

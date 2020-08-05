@@ -12,11 +12,11 @@ from modules.trunc_year.tests.factories import DonationFactory
 fake = faker.Faker()
 
 # create functions
-def create_donations() -> None:
+def create_donations(no_of_years) -> None:
     Donation.objects.all().delete()
 
     this_year = timezone.now().year
-    y = this_year - 5
+    y = this_year - no_of_years
 
     while y <= this_year:
         no_of_donations = fake.pyint(min_value=3, max_value=20)

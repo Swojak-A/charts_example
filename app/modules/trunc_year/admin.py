@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Donation, DonationReport
-from .chart import DonationCountChart
+from .chart import DonationCountChart, DonationTypeComparisonChart
 
 
 @admin.register(Donation)
@@ -29,4 +29,6 @@ class DonationReportAdmin(admin.ModelAdmin):
 
         donation_count_chart = DonationCountChart(queryset=qs)
         response.context_data["donation_count_chart"] = donation_count_chart.to_html()
+        donation_type_chart = DonationTypeComparisonChart(queryset=qs)
+        response.context_data["donation_type_hart"] = donation_type_chart.to_html()
         return response

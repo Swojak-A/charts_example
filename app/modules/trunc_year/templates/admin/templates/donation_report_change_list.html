@@ -11,6 +11,10 @@
         {{ donation_count_chart | safe }}
     {% endif %}
 
+    {% if donation_type_hart %}
+        {{ donation_type_hart | safe }}
+    {% endif %}
+
 {% endblock %}
 
 {% block pagination %}{% endblock %}

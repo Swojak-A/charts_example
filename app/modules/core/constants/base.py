@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 from django.utils.translation import ugettext_lazy as _
 
-ECOMMERCE_SERVICE_MODE = "PICKING_DRIVE"
 
 NO_INFO: str = _("Lack of information")
 BLANK: Tuple[str, str] = ("", NO_INFO)

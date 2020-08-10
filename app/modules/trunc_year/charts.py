@@ -15,7 +15,18 @@ if TYPE_CHECKING:
 
 class DonationCountChart(Chart):
     def __init__(self, queryset: Optional["QuerySet"]):
-        self.queryset = queryset
+        self.queryset = self.narrow_queryset(queryset=queryset)
+
+    def narrow_queryset(self, queryset):
+        if not self.queryset:
+            return None
+        queryset = (
+            self.queryset.annotate(year=TruncYear("donation_date"))
+            .values("year")
+            .annotate(count=Count("id"))
+            .order_by("year")
+        )
+        return queryset
 
     def prepare_data(self):
         if not self.queryset:

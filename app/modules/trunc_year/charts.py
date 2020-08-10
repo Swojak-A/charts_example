@@ -12,6 +12,8 @@ from modules.trunc_year.constants import DonationTypes
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet  # NOQA
     from .models import DonationReport  # NOQA
+    from pandas import DataFrame  # NOQA
+    from plotly.graph_objects import Figure  #NOQA
 
 
 class DonationCountChart(Chart):
@@ -20,7 +22,7 @@ class DonationCountChart(Chart):
         self.queryset = self.prepare_queryset(queryset=queryset)
         self.from_dataframe = True
 
-    def prepare_queryset(self, queryset):
+    def prepare_queryset(self, queryset) -> Optional["QuerySet"]:
         if not queryset:
             return None
 
@@ -33,7 +35,7 @@ class DonationCountChart(Chart):
         return queryset
 
     @property
-    def data(self):
+    def data(self) -> Optional["DataFrame"]:
         if not self.queryset:
             return None
 
@@ -41,8 +43,8 @@ class DonationCountChart(Chart):
         return data
 
     @property
-    def chart(self):
-        if self.data.empty:
+    def chart(self) -> Optional["Figure"]:
+        if not self.data or self.data.empty:
             return None
 
         fig = px.bar(
@@ -55,7 +57,7 @@ class DonationCountChart(Chart):
         )
         return fig
 
-    def to_html(self):
+    def to_html(self) -> Optional[str]:
         if not self.chart:
             return None
 

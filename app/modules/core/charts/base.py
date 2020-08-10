@@ -1,17 +1,22 @@
-from typing import TYPE_CHECKING, Optional, Dict
+from typing import TYPE_CHECKING, Optional, Union, Dict
 from abc import ABC, abstractmethod
 
 if TYPE_CHECKING:
+    from pandas import DataFrame  # NOQA
     from plotly.graph_objects import Figure  # NOQA
 
 
 class Chart(ABC):
+    ...
+
+    @property
     @abstractmethod
-    def prepare_data(self) -> Optional[Dict]:
+    def data(self) -> Optional[Union[Dict, "DataFrame"]]:
         ...
 
+    @property
     @abstractmethod
-    def prepare_chart(self) -> Optional["Figure"]:
+    def chart(self) -> Optional["Figure"]:
         ...
 
     @abstractmethod

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Donation, DonationReport
-from .chart import DonationCountChart, DonationTypeComparisonChart
+from .charts import DonationCountChart, DonationTypeComparisonChart
 
 
 @admin.register(Donation)

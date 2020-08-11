@@ -1,5 +1,5 @@
 # Charts Example Repo
-Project showing how to implement plotly charts into Django admin with handful of examples (based on **Django 3.1.0** with **PostgreSQL** database).
+Project showing how to implement plotly charts into Django admin with some advanced ORM techniques presented on handful of examples (based on **Django 3.1.0** with **PostgreSQL** database).
 
 
 ## Introduction
@@ -74,7 +74,6 @@ docker exec -it <container-name> sh
 ```
 
 * creating development virtual enviroment:
-
 For the purpose of local development you might want to set up virtual enviroment. First you might want to load correct package - in my case it was `sudo apt-get install python3.8-venv`. Now you can create enviroment using `python3.8 -m venv .venv`.
 
 After completion you can activate it using: `source .venv/bin/acticate`. You can now install dependancies using: `pip install -r requirements/base.txt`
@@ -97,7 +96,21 @@ _To Be Updated_
 
 ## Chapter 3: TruncYear
 
-_To Be Updated_
+There are a handful of db function in Django that facilitate queries on datetime field and TruncYear is one of them.
+
+Let's assume that we want to summarize the Donations that comes to our PokeInstitute.
+We have 2 types of donations (Donation and Grant) and we want to end up with a plot that shows how frequent the Donations were year-by-year and also how much money came from each type of Donation.
+
+To make it possible we will use TruncYear function to gather data from one year collectively:
+
+```python
+queryset = (
+    queryset.annotate(year=TruncYear("donation_date"))
+    .values("year")
+    .annotate(count=Count("id"))
+    .order_by("year")
+)
+```
 
 ## Chapter 4: TruncHour
 

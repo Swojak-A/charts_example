@@ -27,9 +27,9 @@ class DonationCountChart(Chart):
 
         queryset = (
             queryset.annotate(year=TruncYear("donation_date"))
-                .values("year")
-                .annotate(count=Count("id"))
-                .order_by("year")
+            .values("year")
+            .annotate(count=Count("id"))
+            .order_by("year")
         )
         return queryset
 
@@ -52,22 +52,18 @@ class DonationCountChart(Chart):
             y="count",
             height=400,
             title="Number of Donations and Grants",
-            labels={"year": "Fiscal Year", "count": "Total Number of Donations and Grants"},
+            labels={
+                "year": "Fiscal Year",
+                "count": "Total Number of Donations and Grants",
+            },
         )
-        fig.update_traces(
-            marker_color="#79aec8",
-            showlegend=True
-        )
+        fig.update_traces(marker_color="#79aec8", showlegend=True)
         fig.data[0]["name"] = "Count"
-        fig.update_layout(legend=dict(
-            title=dict(
-                text=""
-            ),
-            yanchor="top",
-            y=0.95,
-            xanchor="left",
-            x=0.01
-        ))
+        fig.update_layout(
+            legend=dict(
+                title=dict(text=""), yanchor="top", y=0.95, xanchor="left", x=0.01
+            )
+        )
         return fig
 
     def to_html(self) -> Optional[str]:

@@ -7,13 +7,12 @@ from django.db.models import Count, Sum
 from django.db.models.functions import TruncYear
 
 from modules.core.charts import Chart
-from modules.trunc_year.constants import DonationTypes
 
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet  # NOQA
     from .models import DonationReport  # NOQA
     from pandas import DataFrame  # NOQA
-    from plotly.graph_objects import Figure  #NOQA
+    from plotly.graph_objects import Figure  # NOQA
 
 
 class DonationCountChart(Chart):
@@ -28,23 +27,23 @@ class DonationCountChart(Chart):
 
         queryset = (
             queryset.annotate(year=TruncYear("donation_date"))
-            .values("year")
-            .annotate(count=Count("id"))
-            .order_by("year")
+                .values("year")
+                .annotate(count=Count("id"))
+                .order_by("year")
         )
         return queryset
 
     @property
-    def data(self) -> Optional["DataFrame"]:
+    def data(self) -> "DataFrame":
         if not self.queryset:
-            return None
+            return pd.DataFrame(None)
 
         data = pd.DataFrame(list(self.queryset))
         return data
 
     @property
     def chart(self) -> Optional["Figure"]:
-        if not self.data or self.data.empty:
+        if self.data.empty:
             return None
 
         fig = px.bar(
@@ -52,9 +51,23 @@ class DonationCountChart(Chart):
             x="year",
             y="count",
             height=400,
-            title="Number of Donations",
-            labels={"year": "Donation Year", "count": "Total Number of Donations"},
+            title="Number of Donations and Grants",
+            labels={"year": "Fiscal Year", "count": "Total Number of Donations and Grants"},
         )
+        fig.update_traces(
+            marker_color="#79aec8",
+            showlegend=True
+        )
+        fig.data[0]["name"] = "Count"
+        fig.update_layout(legend=dict(
+            title=dict(
+                text=""
+            ),
+            yanchor="top",
+            y=0.95,
+            xanchor="left",
+            x=0.01
+        ))
         return fig
 
     def to_html(self) -> Optional[str]:

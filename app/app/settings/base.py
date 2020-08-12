@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # custom apps
+    "modules.plotly_go_vs_express",
     "modules.trunc_year",
 ]
 

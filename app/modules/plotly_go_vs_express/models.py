@@ -44,3 +44,32 @@ class Employee(BaseModel):
         ordering = ("-created_at",)
         verbose_name = _("Employee")
         verbose_name_plural = _("Employees")
+
+
+class YearRoundEmployerExpenses(BaseModel):
+    employee = models.ForeignKey(
+        to=Employee,
+        null=False,
+        blank=False,
+        verbose_name=_("Employee"),
+        related_name="employer_expenses",
+        on_delete=models.CASCADE,
+    )
+    year = models.PositiveIntegerField(
+        verbose_name=_("Fiscal Year"), null=False, blank=False, default=current_year,
+    )
+    value = models.DecimalField(
+        verbose_name=_("Value"),
+        null=False,
+        blank=False,
+        max_digits=15,
+        decimal_places=2,
+    )
+
+    def __str__(self):
+        return f"Expenses for {self.employee} (year: {self.year})"
+
+    class Meta:
+        ordering = ("-created_at",)
+        verbose_name = _("Employer Expenses")
+        verbose_name_plural = _("Employer Expenses")

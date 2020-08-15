@@ -36,6 +36,7 @@ class Employee(BaseModel):
         choices=EmployeeRoles.name_choices(),
         default="",
     )
+    active = models.BooleanField(null=False, blank=False, default=True)
 
     def __str__(self):
         return f"{self.position} ({self.role}): {self.first_name} {self.last_name}"

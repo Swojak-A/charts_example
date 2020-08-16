@@ -74,3 +74,10 @@ class YearRoundEmployerExpenses(BaseModel):
         ordering = ("-created_at",)
         verbose_name = _("Employer Expenses")
         verbose_name_plural = _("Employer Expenses")
+
+
+class YearRoundEmployerExpensesReport(YearRoundEmployerExpenses):
+    class Meta:
+        proxy = True
+        verbose_name = _("Employer Expenses Report")
+        verbose_name_plural = _("Employer Expenses Reports")

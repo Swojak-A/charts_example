@@ -11,6 +11,7 @@ from modules.plotly_go_vs_express.tests.factories import (
 )
 from modules.trunc_year.models import Donation
 from modules.trunc_year.tests.factories import DonationFactory
+from modules.plotly_go_vs_express.constants import EmployeeRoles
 
 
 # helpers
@@ -30,14 +31,18 @@ def create_employer_expenses(no_of_years: int) -> None:
     this_year = timezone.now().year
     y = this_year - no_of_years
 
-    initial_no_of_employees = fake.pyint(min_value=1, max_value=3)
-    for n in range(initial_no_of_employees):
-        EmployeeFactory()
+    for role in EmployeeRoles.names():
+        initial_no_of_employees = fake.pyint(min_value=1, max_value=3)
+        for n in range(initial_no_of_employees):
+            EmployeeFactory(role=role)
 
     while y <= this_year:
         no_of_new_employees = fake.pyint(min_value=1, max_value=3)
         for n in range(no_of_new_employees):
             EmployeeFactory()
+        for role in EmployeeRoles.names():
+            if not Employee.objects.filter(role=role, active=True).exists():
+                EmployeeFactory(role=role)
         employees = Employee.objects.filter(active=True)
         for employee in employees:
             if (

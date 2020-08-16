@@ -1,17 +1,123 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Dict
 
 import pandas as pd
+import plotly.graph_objects as go
 import plotly.express as px
 
-from django.db.models import F, Value as V
+from django.db.models import F, Sum, Value as V
 from django.db.models.functions import Concat
 
 from modules.core.charts import Chart
+from .constants import EmployeeRoles
 
 if TYPE_CHECKING:
     from django.db.models.query import QuerySet  # NOQA
     from pandas import DataFrame  # NOQA
     from plotly.graph_objects import Figure  # NOQA
+
+
+class EmployerExpensesGoChart(Chart):
+    def __init__(self, queryset: Optional["QuerySet"]):
+        self.initial_queryset = queryset
+        self.queryset = self.prepare_queryset()
+        self.from_dataframe = False
+
+    def prepare_queryset(self):
+        if not self.initial_queryset:
+            return None
+
+        queryset = (
+            self.initial_queryset.annotate(role=F("employee__role"))
+            .values("year", "role")
+            .annotate(value=Sum("value"))
+            .order_by("role", "year")
+        )
+        return queryset
+
+    @property
+    def data(self) -> Optional[Dict]:
+        if not self.queryset:
+            return pd.DataFrame(None)
+
+        data = {
+            "board_sum": [
+                obj["value"]
+                for obj in self.queryset
+                if obj["role"] == EmployeeRoles.board.name
+            ],
+            "guide_sum": [
+                obj["value"]
+                for obj in self.queryset
+                if obj["role"] == EmployeeRoles.guide.name
+            ],
+            "maintenance_sum": [
+                obj["value"]
+                for obj in self.queryset
+                if obj["role"] == EmployeeRoles.maintenance.name
+            ],
+            "researcher_sum": [
+                obj["value"]
+                for obj in self.queryset
+                if obj["role"] == EmployeeRoles.researcher.name
+            ],
+            "year": list(set([obj["year"] for obj in self.queryset])),
+        }
+        return data
+
+    @property
+    def chart(self) -> Optional["Figure"]:
+        if not self.data:
+            return None
+
+        fig = go.Figure(
+            data=[
+                go.Bar(
+                    name="Researcher",
+                    x=self.data["year"],
+                    y=self.data["researcher_sum"],
+                    marker_color="#6c9cb4",
+                ),
+                go.Bar(
+                    name="Maintenance",
+                    x=self.data["year"],
+                    y=self.data["maintenance_sum"],
+                    marker_color="#b2c6c6",
+                ),
+                go.Bar(
+                    name="Board",
+                    x=self.data["year"],
+                    y=self.data["board_sum"],
+                    marker_color="#79aec8",
+                ),
+                go.Bar(
+                    name="Guide",
+                    x=self.data["year"],
+                    y=self.data["guide_sum"],
+                    marker_color="#91aeae",
+                ),
+            ]
+        )
+        fig.update_layout(
+            title="Total Employer Expenses (Plotly Graph Object)",
+            height=530,
+            barmode="stack",
+            legend=dict(
+                title=dict(text=""), yanchor="top", y=0.95, xanchor="left", x=0.01
+            ),
+            xaxis = dict(
+                title_text="Fiscal Year"
+            ),
+            yaxis=dict(
+                title_text="Expenses"
+            )
+        )
+        return fig
+
+    def to_html(self) -> Optional[str]:
+        if not self.chart:
+            return None
+
+        return self.chart.to_html()
 
 
 class EmployerExpensesExpressChart(Chart):

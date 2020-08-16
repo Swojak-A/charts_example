@@ -36,5 +36,5 @@ class Donation(BaseModel):
 class DonationReport(Donation):
     class Meta:
         proxy = True
-        verbose_name = _("Donation Report")
-        verbose_name_plural = _("Donation Reports")
+        verbose_name = _("Donations Report")
+        verbose_name_plural = _("Donations Reports")

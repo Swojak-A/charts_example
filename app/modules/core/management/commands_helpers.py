@@ -40,7 +40,16 @@ def create_employer_expenses(no_of_years: int) -> None:
             EmployeeFactory()
         employees = Employee.objects.filter(active=True)
         for employee in employees:
-            YearRoundEmployerExpensesFactory(employee=employee)
+            if (
+                previous_expenses := YearRoundEmployerExpenses.objects.filter(
+                    employee=employee
+                ).first()
+            ) :
+                YearRoundEmployerExpensesFactory(
+                    employee=employee, year=y, value=previous_expenses.value
+                )
+            else:
+                YearRoundEmployerExpensesFactory(employee=employee, year=y)
             if draw_probability(chance=15):
                 employee.active = False
                 employee.save()

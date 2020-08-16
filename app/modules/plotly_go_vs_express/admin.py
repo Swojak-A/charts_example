@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .charts import EmployerExpensesExpressChart
+from .charts import EmployerExpensesGoChart, EmployerExpensesExpressChart
 from .models import Employee, YearRoundEmployerExpenses, YearRoundEmployerExpensesReport
 
 
@@ -44,6 +44,10 @@ class YearRoundEmployerExpensesReportAdmin(admin.ModelAdmin):
         except (AttributeError, KeyError):
             return response
 
+        employer_expenses_go_chart = EmployerExpensesGoChart(queryset=qs)
+        response.context_data[
+            "employer_expenses_go_chart"
+        ] = employer_expenses_go_chart.to_html()
         employer_expenses_express_chart = EmployerExpensesExpressChart(queryset=qs)
         response.context_data[
             "employer_expenses_express_chart"

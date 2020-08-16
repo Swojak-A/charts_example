@@ -7,6 +7,9 @@
 
 {% block result_list %}
 
+    {% if employer_expenses_go_chart %}
+        {{ employer_expenses_go_chart | safe }}
+    {% endif %}
     {% if employer_expenses_express_chart %}
         {{ employer_expenses_express_chart | safe }}
     {% endif %}

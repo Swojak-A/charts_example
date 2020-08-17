@@ -18,15 +18,15 @@ if TYPE_CHECKING:
 class DonationCountChart(Chart):
     def __init__(self, queryset: Optional["QuerySet"]):
         self.initial_queryset = queryset
-        self.queryset = self.prepare_queryset(queryset=queryset)
+        self.queryset = self.prepare_queryset()
         self.from_dataframe = True
 
-    def prepare_queryset(self, queryset) -> Optional["QuerySet"]:
-        if not queryset:
+    def prepare_queryset(self) -> Optional["QuerySet"]:
+        if not self.initial_queryset:
             return None
 
         queryset = (
-            queryset.annotate(year=TruncYear("donation_date"))
+            self.initial_queryset.annotate(year=TruncYear("donation_date"))
             .values("year")
             .annotate(count=Count("id"))
             .order_by("year")
@@ -76,15 +76,15 @@ class DonationCountChart(Chart):
 class DonationTypeComparisonChart(Chart):
     def __init__(self, queryset: Optional["QuerySet"]):
         self.initial_queryset = queryset
-        self.queryset = self.prepare_queryset(queryset=queryset)
+        self.queryset = self.prepare_queryset()
         self.from_dataframe = True
 
-    def prepare_queryset(self, queryset) -> Optional["QuerySet"]:
-        if not queryset:
+    def prepare_queryset(self) -> Optional["QuerySet"]:
+        if not self.initial_queryset:
             return None
 
         queryset = (
-            queryset.annotate(year=TruncYear("donation_date"))
+            self.initial_queryset.annotate(year=TruncYear("donation_date"))
             .values("year", "type")
             .annotate(value=Sum("value"))
             .order_by("type", "year")

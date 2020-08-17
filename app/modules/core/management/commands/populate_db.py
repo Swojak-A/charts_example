@@ -2,7 +2,10 @@ from typing import Optional
 
 from django.core.management.base import BaseCommand
 
-from modules.core.management.commands_helpers import create_donations
+from modules.core.management.commands_helpers import (
+    create_employer_expenses,
+    create_donations,
+)
 
 
 class Command(BaseCommand):
@@ -29,7 +32,12 @@ def populate(
 ):
     if not days_backwards:
         days_backwards = 30
+    if not years_backwards:
+        years_backwards = 10
 
-    print(f"Populating database {days_backwards} days backwards")
+    print(
+        f"Populating database {days_backwards} days / {years_backwards} years backwards"
+    )
 
+    create_employer_expenses(no_of_years=years_backwards)
     create_donations(no_of_years=years_backwards)

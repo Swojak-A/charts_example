@@ -17,7 +17,7 @@ class DonationAdmin(admin.ModelAdmin):
 @admin.register(DonationReport)
 class DonationReportAdmin(admin.ModelAdmin):
 
-    change_list_template = "admin/templates/donation_report_change_list.html"
+    change_list_template = "admin/trunc_year/donation_report_change_list.html"
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(request, extra_context=extra_context)
